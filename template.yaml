@@ -1,0 +1,100 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  org-resource-checker
+
+  This repository provides the automation to check for Organizational conditions like Org Id and Org Path across the AWS Resources in all the AWS Accounts in an AWS Organization. This is used in analyzing the dependencies when AWS Accounts are migrated from one AWS Organization to another.
+
+Resources:
+  OrgDependencyCheckerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/
+      Handler: dependencyChecker.lambda_handler
+      Runtime: python3.8
+      Timeout: 900 # 15 mins in case many accounts assessed at once.
+      MemorySize: 1024
+      Policies:
+        - AWSOrganizationsReadOnlyAccess
+        - AWSElementalMediaStoreReadOnly
+        - S3ReadPolicy:
+            BucketName: !Ref ReportBucket
+        - S3WritePolicy:
+            BucketName: !Ref ReportBucket
+        - Statement:
+          - Effect: Allow
+            Action:
+               - "sts:AssumeRole"
+            Resource: "arn:aws:iam::*:role/check-resource-policies-role"
+      Environment:
+        Variables:
+          USE_ORG_FOR_ACCOUNT_LIST: true  # Set this to True to scan all accounts in the Org. False means use ACCOUNT_LIST only
+          ACCOUNT_LIST: 000000000000,111111111111
+          REGION_LIST: ap-southeast-2,ap-southeast-1
+
+  ReportBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub '${AWS::AccountId}-org-check-resource-reports'
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+
+  # This role is included here as stacksets will not deploy to master account in an Org
+  CheckResPolicyRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "check-resource-policies-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Principal:
+              AWS:
+                - !GetAtt OrgDependencyCheckerFunctionRole.Arn
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/ReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/AWSElementalMediaStoreReadOnly"
+
+  GlueInlinePolicy: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+               - "glue:GetResourcePolicies"
+            Resource: "*"
+      PolicyName: GlueInlineResPoliciesPolicy
+      Roles: 
+        - !Ref CheckResPolicyRole
+    
+Outputs:
+  OrgDependencyCheckerFunction:
+    Description: "Org dependency checker ARN"
+    Value: !GetAtt OrgDependencyCheckerFunction.Arn
+  LambdaRole:
+    Description: "Implicit IAM Role created for org dependency checker function"
+    Value: !GetAtt OrgDependencyCheckerFunctionRole.Arn
+  ReportBucketNameOutput:
+    Description: "Bucket name where XLS and CSV reports are stored"
+    Value: !Ref ReportBucket

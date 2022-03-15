@@ -1,0 +1,139 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3Access",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:GetBucketPolicy",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketTagging",
+                "s3:PutBucketVersioning",
+                "s3:PutEncryptionConfiguration",
+                "s3:PutBucketPublicAccessBlock",
+                "s3:CreateBucket",
+                "s3:DeleteBucket",
+                "s3:DeleteObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::aws-sam-cli-managed-default*",
+                "arn:aws:s3:::*org-check-resource-reports",
+                "arn:aws:s3:::*org-check-resource-reports/*",
+                "arn:aws:s3:::cf-templates*"
+            ]
+        },
+        {
+            "Sid": "IAMAccess",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:GetRolePolicy",
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:PassRole",
+                "iam:DeleteRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::<AWS ACCOUNT ID>:role/sam-app-OrgDependencyCheckerFunctionRole*",
+                "arn:aws:iam::<AWS ACCOUNT ID>:role/check-resource-policies-role"
+            ]
+        },
+        {
+            "Sid": "LambdaAccess1",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:CreateFunction",
+                "lambda:DeleteFunction",
+                "lambda:UpdateFunctionConfiguration",
+                "lambda:InvokeFunction"
+            ],
+            "Resource": [
+                "arn:aws:lambda:*:<AWS ACCOUNT ID>:function:sam-app-OrgDependencyCheckerFunction*"
+            ]
+        },
+        {
+            "Sid": "SAMTransform",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateChangeSet"
+            ],
+            "Resource": [
+                "arn:aws:cloudformation:*:aws:transform/Serverless-2016-10-31",
+                "arn:aws:cloudformation:*:<AWS ACCOUNT ID>:stack/sam-app/*"
+            ]
+        },
+        {
+            "Sid": "CloudFormationAccess",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateStack",
+                "cloudformation:DeleteStack",
+                "cloudformation:UpdateStack",
+                "cloudformation:CreateChangeSet",
+                "cloudformation:ExecuteChangeSet"
+            ],
+            "Resource": [
+                "arn:aws:cloudformation:*:<AWS ACCOUNT ID>:stack/aws-sam-cli-managed-default*",
+                "arn:aws:cloudformation:*:<AWS ACCOUNT ID>:stack/sam-app*"
+            ]
+        },
+        {
+            "Sid": "ConsoleUsage",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateUploadBucket",
+                "cloudformation:Describe*",
+                "cloudformation:EstimateTemplateCost",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+                "cloudformation:ValidateTemplate",
+                "cloudformation:Detect*",
+                "iam:ListRoles",
+                "iam:GetRole",
+                "organizations:Describe*",
+                "organizations:List*",
+                "s3:ListAllMyBuckets",
+                "lambda:Get*",
+                "lambda:List*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "StackSetDeploy1",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateStackSet",
+                "cloudformation:CreateStackInstances",
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DeleteStackInstances",
+                "cloudformation:UpdateStackSet",
+                "iam:CreateServiceLinkedRole"
+            ],
+            "Resource": [
+                "arn:aws:cloudformation:us-east-1:<AWS ACCOUNT ID>:stackset/org-dep-checker-role:*",
+                "arn:aws:iam::<AWS ACCOUNT ID>:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin",
+                "arn:aws:cloudformation:*::type/resource/AWS-IAM-Role",
+                "arn:aws:cloudformation:*::type/resource/AWS-IAM-Policy",
+                "arn:aws:cloudformation:*:<AWS ACCOUNT ID>:stackset-target/org-dep-checker-role*"
+            ]
+        },
+        {
+            "Sid": "CloudWatchLogsAccess",
+            "Effect": "Allow",
+            "Action": [
+                "logs:describeLogGroups",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "logs:FilterLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:<ACCOUNT ID>:log-group:*"
+            ]
+        }
+    ]
+}

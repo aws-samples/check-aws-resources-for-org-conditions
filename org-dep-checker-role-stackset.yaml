@@ -1,0 +1,46 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: This template is used to create a role that will be used by Lambda for cross account access to check for Organizational conditions in AWS Resources
+
+Parameters:
+  LambdaRole:
+    Type: String
+    Description: What is the ARN of the Lambda Execution Role for the check org condition function?
+
+Resources:
+  CheckResPolicyRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "check-resource-policies-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Effect: "Allow"
+            Principal:
+              AWS:
+                - !Ref LambdaRole
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/ReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/AWSElementalMediaStoreReadOnly"
+
+  GlueInlinePolicy: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyDocument: 
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+               - "glue:GetResourcePolicies"
+            Resource: "*"
+      PolicyName: GlueInlineResPoliciesPolicy
+      Roles: 
+        - !Ref CheckResPolicyRole
+
