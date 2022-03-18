@@ -5,7 +5,10 @@ SPDX-License-Identifier: MIT-0
 
 This repository provides the automation to check for Organizational conditions like Org Id and Org Path across the AWS Resources in all the AWS Accounts in an AWS Organization. This is used in analyzing the dependencies when AWS Accounts are migrated from one AWS Organization to another. Please review the [Customer Advisory](Customer_advisory.md) before using the Dependency Checker.
 
-This artifact will provide the 
+
+![image info](./media/archdiag.jpg)
+
+This repository will provide the 
 1. CloudFormation template to deploy the IAM role via stacksets to all accounts in the Org (required by lambda to assume)
 2. SAM application to:
     1. Deploy Lambda function for scanning the AWS Resources for Org Id and Org Path conditions
