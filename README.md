@@ -1,6 +1,13 @@
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
+# Purpose
+Many enterprise customers use AWS Organizations for the management of AWS Accounts and often times they come across a scenario when there is a need to migrate AWS Accounts from one AWS Organization to another AWS Organization.
+
+AWS Organizations helps you centrally manage and govern your environment as you grow and scale your AWS resources. In addition, AWS Organizations is integrated with other AWS services so you can define central configurations, security mechanisms, audit requirements, and resource sharing across accounts in your organization. As we work with customers who may have an acquisition use case or a need to move from one AWS Organization to another, they ask "what can break?"
+
+There are a few things that must be considered for analyzing the impact when migrating AWS Accounts from one AWS Organization to another: So, during the course of migrating AWS Accounts from one AWS Organization to another it is imperative to understand the central configurations, organizational dependencies and assess the environment before the actual migration.
+
 # AWS Organizations dependency checker
 
 This repository provides the automation to check for Organizational conditions like Org Id and Org Path across the AWS Resources in all the AWS Accounts in an AWS Organization. This is used in analyzing the dependencies when AWS Accounts are migrated from one AWS Organization to another. Please review the [Customer Advisory](Customer_advisory.md) before using the Dependency Checker.
