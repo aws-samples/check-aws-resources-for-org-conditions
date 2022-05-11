@@ -10,7 +10,7 @@ There are a few things that must be considered for analyzing the impact when mig
 
 # AWS Organizations dependency checker
 
-This repository provides the automation to check for Organizational conditions like Org Id and Org Path across the AWS Resources in all the AWS Accounts in an AWS Organization. This is used in analyzing the dependencies when AWS Accounts are migrated from one AWS Organization to another. Please review the [Customer Advisory](Customer_advisory.md) before using the Dependency Checker.
+This repository provides the automation to check for Organizational conditions like Org Id and Org Path across the AWS Resources in all the AWS Accounts in an AWS Organization. This is used in analyzing the dependencies when AWS Accounts are migrated from one AWS Organization to another. Please review the [Customer Advisory](https://github.com/aws-samples/check-aws-resources-for-org-conditions/blob/main/Customer_Advisory.md) before using the Dependency Checker.
 
 
 ![image info](./media/archdiag.jpg)
