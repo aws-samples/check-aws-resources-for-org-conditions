@@ -132,7 +132,7 @@
                 "logs:FilterLogEvents"
             ],
             "Resource": [
-                "arn:aws:logs:*:<ACCOUNT ID>:log-group:*"
+                "arn:aws:logs:*:<AWS ACCOUNT ID>:log-group:*"
             ]
         }
     ]
