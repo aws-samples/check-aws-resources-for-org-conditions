@@ -1,7 +1,8 @@
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
-This code is now deprecated. For the updated AWS Solution, please refer Account Assessment for AWS Organizations: https://aws.amazon.com/solutions/implementations/account-assessment-for-aws-organizations/
+**This code is now deprecated. For the updated AWS Solution, please refer Account Assessment for AWS Organizations:** 
+https://aws.amazon.com/solutions/implementations/account-assessment-for-aws-organizations/
 
 # Purpose
 Many enterprise customers use AWS Organizations for the management of AWS Accounts and often times they come across a scenario when there is a need to migrate AWS Accounts from one AWS Organization to another AWS Organization.
